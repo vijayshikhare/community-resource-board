@@ -1,0 +1,7 @@
+node_modules/
+.cache/
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+build/
