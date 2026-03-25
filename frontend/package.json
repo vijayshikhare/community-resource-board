@@ -1,7 +1,28 @@
 {
   "name": "community-resource-board",
   "version": "1.0.0",
+  "description": "Frontend for Community Resource Board, a React-based community opportunities platform with auth, dashboards, and role-based workflows.",
   "private": true,
+  "keywords": [
+    "community-resource-board",
+    "mern",
+    "react",
+    "frontend",
+    "dashboard",
+    "jwt-auth",
+    "rbac",
+    "community-platform"
+  ],
+  "author": "Vijay Shikhare",
+  "license": "MIT",
+  "homepage": "https://communityresourceboard.netlify.app",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vijayshikhare/community-resource-board.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vijayshikhare/community-resource-board/issues"
+  },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "@react-oauth/google": "^0.13.4",

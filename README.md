@@ -28,6 +28,9 @@ Empower communities with a platform that connects those seeking resources with t
 - [Production Deployment](#-production-deployment)
 - [Core API Routes](#core-api-routes)
 - [Role Matrix](#role-matrix)
+- [GitHub About Setup](#-github-about-setup)
+- [Releases](#-releases)
+- [Packages](#-packages)
 - [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
 
@@ -458,6 +461,41 @@ mongodb+srv://username:password@clustername.mongodb.net/dbname?retryWrites=true&
 - User: browse/apply resources, manage own profile.
 - Organizer: all user actions + create resources + review applications.
 - Admin: all organizer actions + policy and user management.
+
+## 📌 GitHub About Setup
+
+To avoid "No description, website, or topics provided", configure these in GitHub repo settings:
+
+- Description:
+  - Production-ready MERN community platform with JWT auth, RBAC, resource workflows, and free-tier deployment support.
+- Website:
+  - https://communityresourceboard.netlify.app
+- Topics:
+  - community-resource-board, mern, react, nodejs, express, mongodb, jwt, rbac, fullstack, open-source, netlify, render
+
+Ready copy/paste file:
+- See `docs/GITHUB_ABOUT_SETUP.md`
+
+## 🚀 Releases
+
+No releases yet? Publish your first one from GitHub:
+
+1. Open repository "Releases".
+2. Click "Draft a new release".
+3. Tag version: `v1.1.0`
+4. Title: `v1.1.0 - Security and Growth Upgrade`
+5. Paste notes from `docs/RELEASE_v1.1.0.md`
+6. Publish release.
+
+This improves trust, changelog visibility, and star conversion.
+
+## 📦 Packages
+
+This repository is an application (not an npm library), so package publishing is optional.
+
+Best options:
+- Keep "No packages published" (totally fine for app repos).
+- Or publish Docker images later via GitHub Container Registry for backend/frontend deployment artifacts.
 
 ## Troubleshooting
 - CORS error in browser:

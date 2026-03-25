@@ -1,16 +1,34 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "Backend API for Community Resource Board, a production-ready MERN platform with JWT auth, RBAC, and resource/application workflows.",
+  "main": "src/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon src/server.js",
     "start": "node src/server.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "keywords": [
+    "community-resource-board",
+    "mern",
+    "nodejs",
+    "express",
+    "mongodb",
+    "jwt",
+    "rbac",
+    "rest-api",
+    "backend"
+  ],
+  "author": "Vijay Shikhare",
+  "license": "MIT",
+  "homepage": "https://github.com/vijayshikhare/community-resource-board",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vijayshikhare/community-resource-board.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vijayshikhare/community-resource-board/issues"
+  },
   "dependencies": {
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.2",
