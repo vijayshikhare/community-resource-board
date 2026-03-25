@@ -5,7 +5,7 @@
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "@react-oauth/google": "^0.13.4",
-    "axios": "^1.5.0",
+    "axios": "^1.13.6",
     "framer-motion": "^12.23.22",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
