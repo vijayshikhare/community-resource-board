@@ -6,7 +6,7 @@
     "@heroicons/react": "^2.2.0",
     "@react-oauth/google": "^0.13.4",
     "axios": "^1.5.0",
-    "framer-motion": "^12.23.22",
+    "framer-motion": "^12.38.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^5.5.0",
