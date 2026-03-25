@@ -10,7 +10,7 @@ const AdminConsole = () => {
   const [stats, setStats] = useState(null);
   const [users, setUsers] = useState([]);
   const [resources, setResources] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState('');
   const [busyId, setBusyId] = useState('');
   const [userFilter, setUserFilter] = useState('all');
@@ -30,7 +30,7 @@ const AdminConsole = () => {
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to load admin data.');
     } finally {
-      setLoading(false);
+      if (initialLoading) setInitialLoading(false);
     }
   };
 
@@ -144,7 +144,7 @@ const AdminConsole = () => {
           </section>
         )}
 
-        {loading ? (
+        {initialLoading ? (
           <section className="section flex-center" style={{ minHeight: '40vh' }}>
             <div className="loading"></div>
           </section>

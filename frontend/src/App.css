@@ -448,6 +448,10 @@ label {
   font-size: 0.78rem;
   font-weight: 700;
   color: var(--text-900);
+  max-width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .account-role {
@@ -510,6 +514,7 @@ label {
   padding: 0.34rem 0.66rem;
   border-radius: 999px;
   background: rgba(14, 165, 164, 0.15);
+  overflow-wrap: anywhere;
 }
 
 .ghost-btn,
@@ -743,6 +748,21 @@ label {
   padding: 0.36rem 0.7rem;
 }
 
+.resource-detail-layout {
+  display: grid;
+  gap: 1.1rem;
+  align-items: start;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.resource-detail-main {
+  min-width: 0;
+}
+
+.resource-detail-sidebar {
+  position: static;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -797,6 +817,15 @@ label {
   .footer-grid {
     grid-template-columns: 1.45fr 1fr 1fr 1fr;
   }
+
+  .resource-detail-layout {
+    grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+  }
+
+  .resource-detail-sidebar {
+    position: sticky;
+    top: 90px;
+  }
 }
 
 @media (max-width: 900px) {
@@ -834,6 +863,10 @@ label {
     width: 100%;
     text-align: center;
     justify-content: center;
+  }
+
+  .account-name {
+    max-width: 90px;
   }
 }
 

@@ -56,6 +56,9 @@ const Profile = () => {
 
   const absoluteProfileImage = useMemo(() => {
     if (!profileImage) return '';
+    // Profile image is now stored as base64 data URL, use directly
+    if (profileImage.startsWith('data:image/')) return profileImage;
+    // Fallback for legacy file paths
     if (profileImage.startsWith('http')) return profileImage;
     const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';
     const normalizedBase = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;

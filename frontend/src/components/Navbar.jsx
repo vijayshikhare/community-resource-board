@@ -84,6 +84,7 @@ const Navbar = () => {
 
   const profileImageUrl = useMemo(() => {
     if (!user?.profileImage) return '';
+    if (user.profileImage.startsWith('data:image/')) return user.profileImage;
     if (user.profileImage.startsWith('http')) return user.profileImage;
     const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';
     const normalizedBase = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;

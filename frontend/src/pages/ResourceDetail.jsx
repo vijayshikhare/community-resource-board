@@ -83,8 +83,8 @@ const ResourceDetail = () => {
           </section>
         )}
 
-        <section className="section grid grid-3" style={{ alignItems: 'start' }}>
-          <article className="card" style={{ gridColumn: 'span 2' }}>
+        <section className="section resource-detail-layout">
+          <article className="card resource-detail-main">
             <div className="flex gap-sm" style={{ flexWrap: 'wrap', marginBottom: '0.6rem' }}>
               <span className="status-chip" style={{ background: 'rgba(14,165,164,0.14)', color: '#0f766e' }}>{resource.type || 'Resource'}</span>
               {resource.featured && <span className="status-chip" style={{ background: 'rgba(249,115,22,0.16)', color: '#c2410c' }}>Featured</span>}
@@ -129,7 +129,7 @@ const ResourceDetail = () => {
             )}
           </article>
 
-          <aside className="card" style={{ position: 'sticky', top: '90px' }}>
+          <aside className="card resource-detail-sidebar">
             <h3 style={{ marginBottom: '0.7rem' }}>Take action</h3>
             {user?.role === 'user' && (
               <button className="btn btn-primary" style={{ width: '100%', marginBottom: '0.6rem' }} onClick={() => navigate(`/resource/${id}/apply`)}>

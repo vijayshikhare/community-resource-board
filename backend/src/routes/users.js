@@ -6,33 +6,6 @@ const Resource = require('../models/Resource');
 const Application = require('../models/Application');
 const auth = require('../middlewares/auth');
 const bcrypt = require('bcryptjs');
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
-
-const profileUploadsDir = path.join(__dirname, '../uploads/profiles');
-if (!fs.existsSync(profileUploadsDir)) fs.mkdirSync(profileUploadsDir, { recursive: true });
-
-const profileStorage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, profileUploadsDir),
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname || '').toLowerCase();
-    cb(null, `profile-${req.user.id}-${Date.now()}${ext}`);
-  },
-});
-
-const profileUpload = multer({
-  storage: profileStorage,
-  limits: { fileSize: 3 * 1024 * 1024 },
-  fileFilter: (req, file, cb) => {
-    const allowed = new Set(['image/jpeg', 'image/png', 'image/webp']);
-    if (allowed.has(file.mimetype)) {
-      cb(null, true);
-      return;
-    }
-    cb(new Error('Only JPG, PNG, and WEBP images are allowed'));
-  },
-});
 
 // @route   GET /api/users/profile
 // @desc    Get current user profile
@@ -95,12 +68,19 @@ router.put('/profile', auth, async (req, res) => {
 });
 
 // @route   PUT /api/users/profile/photo
-// @desc    Upload profile photo
+// @desc    Upload profile photo (base64 to database)
 // @access  Private
-router.put('/profile/photo', auth, profileUpload.single('profilePhoto'), async (req, res) => {
+router.put('/profile/photo', auth, async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ message: 'Profile photo is required' });
+    const { profilePhoto } = req.body;
+
+    if (!profilePhoto || typeof profilePhoto !== 'string') {
+      return res.status(400).json({ message: 'Profile photo data is required' });
+    }
+
+    // Validate base64 format (should start with data:image/)
+    if (!profilePhoto.startsWith('data:image/')) {
+      return res.status(400).json({ message: 'Invalid image format' });
     }
 
     const user = await User.findById(req.user.id);
@@ -108,15 +88,8 @@ router.put('/profile/photo', auth, profileUpload.single('profilePhoto'), async (
       return res.status(404).json({ message: 'User not found' });
     }
 
-    if (user.profileImage && user.profileImage.startsWith('/uploads/profiles/')) {
-      const normalizedRelativePath = user.profileImage.replace(/^[/\\]+/, '');
-      const existingFilePath = path.join(__dirname, '..', normalizedRelativePath);
-      if (fs.existsSync(existingFilePath)) {
-        fs.unlinkSync(existingFilePath);
-      }
-    }
-
-    user.profileImage = `/uploads/profiles/${req.file.filename}`;
+    // Store base64 directly in database
+    user.profileImage = profilePhoto;
     await user.save();
 
     const updatedUser = await User.findById(req.user.id).select('-password');
@@ -189,12 +162,66 @@ router.delete('/account', auth, async (req, res) => {
   }
 });
 
+// @route   POST /api/users/admin/create-admin
+// @desc    Create new admin account (admin-only, for backend/manual use)
+// @access  Private (Admin only)
+router.post('/admin/create-admin', auth, async (req, res) => {
+  try {
+    // Only existing admins can create other admins
+    if (req.user.role !== 'admin') {
+      console.warn(`[SECURITY] Non-admin user ${req.user.id} attempted to create admin account`);
+      return res.status(403).json({ message: 'Admin access required' });
+    }
+
+    const { email, name, password } = req.body;
+
+    // Validate input
+    if (!email || !name || !password) {
+      return res.status(400).json({ message: 'Email, name, and password are required' });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({ message: 'Password must be at least 6 characters' });
+    }
+
+    // Check if email already exists
+    const existingUser = await User.findOne({ email: email.toLowerCase().trim() });
+    if (existingUser) {
+      return res.status(400).json({ message: 'Email already registered' });
+    }
+
+    // Create admin user
+    const newAdmin = new User({
+      name: name.trim(),
+      email: email.toLowerCase().trim(),
+      username: `admin-${Date.now()}`,
+      password,
+      role: 'admin',
+    });
+
+    await newAdmin.save();
+
+    // Audit log
+    console.log(`[ADMIN_AUDIT] Admin ${req.user.id} created new admin account: ${newAdmin._id}`);
+
+    const sanitized = await User.findById(newAdmin._id).select('-password -passwordResetToken -passwordResetExpires');
+    return res.status(201).json({
+      message: 'Admin account created successfully',
+      user: sanitized,
+    });
+  } catch (error) {
+    console.error('[ADMIN_ERROR] Create admin error:', error);
+    return res.status(500).json({ message: 'Error creating admin account' });
+  }
+});
+
 // @route   GET /api/users/admin/stats
 // @desc    Get platform stats for admin
-// @access  Private (Admin)
+// @access  Private (Admin only)
 router.get('/admin/stats', auth, async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
+      console.warn(`[SECURITY] Non-admin user ${req.user.id} attempted to access admin stats`);
       return res.status(403).json({ message: 'Admin access required' });
     }
 
@@ -241,10 +268,11 @@ router.get('/admin/stats', auth, async (req, res) => {
 
 // @route   GET /api/users/admin/users
 // @desc    List all users for admin
-// @access  Private (Admin)
+// @access  Private (Admin only)
 router.get('/admin/users', auth, async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
+      console.warn(`[SECURITY] Non-admin user ${req.user.id} attempted to list admin users`);
       return res.status(403).json({ message: 'Admin access required' });
     }
 
@@ -261,10 +289,11 @@ router.get('/admin/users', auth, async (req, res) => {
 
 // @route   PATCH /api/users/admin/users/:id/role
 // @desc    Change user role (admin)
-// @access  Private (Admin)
+// @access  Private (Admin only)
 router.patch('/admin/users/:id/role', auth, async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
+      console.warn(`[SECURITY] Non-admin user ${req.user.id} attempted to change user role`);
       return res.status(403).json({ message: 'Admin access required' });
     }
 
@@ -296,10 +325,11 @@ router.patch('/admin/users/:id/role', auth, async (req, res) => {
 
 // @route   PATCH /api/users/admin/users/:id/status
 // @desc    Activate/deactivate user account (admin)
-// @access  Private (Admin)
+// @access  Private (Admin only)
 router.patch('/admin/users/:id/status', auth, async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
+      console.warn(`[SECURITY] Non-admin user ${req.user.id} attempted to change user status`);
       return res.status(403).json({ message: 'Admin access required' });
     }
 

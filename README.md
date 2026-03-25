@@ -1,278 +1,197 @@
-# 🌐 Community Resource Board – Full-Stack MERN Application
+# Community Resource Board
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Frontend: Netlify](https://img.shields.io/badge/Frontend-Netlify-brightgreen)](https://community-resource-board.netlify.app)
-[![Backend: Render](https://img.shields.io/badge/Backend-Render-blue)](https://community-resource-board-api.onrender.com)
-[![Database: MongoDB](https://img.shields.io/badge/Database-MongoDB-green)](https://www.mongodb.com/atlas)
-[![GitHub Repo stars](https://img.shields.io/github/stars/vijayshikhare/community-resource-board?style=social)](https://github.com/vijayshikhare/community-resource-board)
+A production-ready MERN platform to publish community opportunities, accept applications, and manage workflows across user, organizer, and admin roles.
 
-Welcome to **Community Resource Board** – a comprehensive, full-stack MERN (MongoDB, Express, React, Node.js) application designed to empower communities by facilitating resource sharing, opportunity applications, and collaborative management. Whether you're a user seeking resources, an organizer posting opportunities, or an admin overseeing the platform, this app streamlines it all with secure authentication, role-based access, and intuitive workflows.
+[Live Frontend](https://communityresourceboard.netlify.app) | [API Health](https://community-resource-board-api.onrender.com/health) | [Repository](https://github.com/vijayshikhare/community-resource-board)
 
-🚀 **Live Demo**:  
-- **Frontend**: [https://community-resource-board.netlify.app](https://community-resource-board.netlify.app)  
-- **Backend API**: [https://community-resource-board-api.onrender.com/health](https://community-resource-board-api.onrender.com/health)  
+## Why This Project
+Community Resource Board helps teams launch a practical resource marketplace quickly:
+- Users can discover and apply to resources.
+- Organizers can publish resources and review applications.
+- Admins can enforce platform policy and manage accounts.
+- The stack is deployable on free tiers (Netlify + Render + MongoDB Atlas).
 
-📱 **Demo Credentials** (for testing):  
-- **Admin**: Email: `admin@example.com` | Password: `admin123` (register with invite code "ADMIN2024").  
-- **Organizer**: Email: `organizer@example.com` | Password: `org123` (invite code "ORGANIZER2024").  
-- **User**: Register freely with any email/password (default role: user).
+## Key Features
+- Secure authentication with JWT and role-based access control.
+- Real-time style refresh loops for dashboards and review pages.
+- Resource lifecycle management (create, edit, active/draft control).
+- Application status workflow (pending, reviewed, accepted, rejected).
+- Profile management with database-backed avatar storage.
+- Production-safe CORS, rate-limiting, and health endpoints.
 
----
+## Architecture
+- Frontend: React, React Router, Context API, Axios.
+- Backend: Node.js, Express, Mongoose, JWT, bcryptjs.
+- Database: MongoDB Atlas.
+- Hosting: Netlify (frontend), Render (backend).
 
-## 👨‍💻 About the Project
+## Tech Stack
+- React 18
+- Node.js + Express
+- MongoDB + Mongoose
+- JWT + bcryptjs
+- Axios
 
-Community Resource Board is a dynamic platform for community-driven resource discovery and management. Users can browse and apply for resources (e.g., jobs, events, learning materials), while organizers and admins create, review, and manage content. Built with security in mind (JWT auth, bcrypt hashing), it's scalable for real-world use.
+## Monorepo Structure
+```text
+community-resource-board/
+  backend/
+    src/
+      controllers/
+      middlewares/
+      models/
+      routes/
+      utils/
+      server.js
+  frontend/
+    src/
+      components/
+      context/
+      pages/
+      services/
+      utils/
+  README.md
+```
 
-**Key Goals**:
-- Secure, role-based authentication (user/organizer/admin).
-- Seamless resource creation, application submission, and status tracking.
-- Responsive, user-friendly interface with error handling and loading states.
-- Production-ready deployment on free tiers (Netlify, Render, MongoDB Atlas).
+## Quick Start (Local)
+### 1. Clone
+```bash
+git clone https://github.com/vijayshikhare/community-resource-board.git
+cd community-resource-board
+```
 
-This project showcases full-stack development skills, from API design to UI/UX.
+### 2. Backend Setup
+```bash
+cd backend
+npm install
+```
 
----
+Create backend .env:
+```env
+PORT=5000
+NODE_ENV=development
+MONGODB_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+JWT_EXPIRES_IN=30d
 
-## ✨ Features
+CORS_ORIGINS=http://localhost:3000,http://localhost:5173
+FRONTEND_URL=http://localhost:3000
+NETLIFY_SITE_NAME=communityresourceboard
 
-- **Authentication & Authorization**: JWT-based login/register with invite codes for roles. Auto-logout on token expiry.
-- **Role-Based Dashboards**: 
-  - **Users**: Browse resources, submit/withdraw applications.
-  - **Organizers**: Create/edit resources, review applications.
-  - **Admins**: Full access, including user/profile management.
-- **Resource Management**: POST/GET/PUT/DELETE resources with validation (title, description, skills).
-- **Application Workflow**: Submit applications, update status (pending/approved/rejected), track history.
-- **Profile Features**: Update profile, change password, upload resume/image.
-- **Responsive UI**: Mobile-first design with animations, loading spinners, and error toasts.
-- **Security**: Password hashing, token protection, input validation, CORS.
-- **Monitoring**: Health check endpoint (`/health`), detailed logging.
+ORGANIZER_INVITE_CODE=ORGANIZER2024
+ADMIN_INVITE_CODE=ADMIN2024
 
-| Feature | User | Organizer | Admin |
-|---------|------|-----------|-------|
-| Register/Login | ✅ | ✅ | ✅ |
-| Browse/Apply Resources | ✅ | ✅ | ✅ |
-| Create/Edit Resources | ❌ | ✅ | ✅ |
-| Submit/Withdraw Applications | ✅ | ❌ | ✅ |
-| Review Applications | ❌ | ✅ | ✅ |
-| Manage Profiles | ✅ (Own) | ✅ (Own) | ✅ (All) |
+EMAIL_SERVICE=gmail
+EMAIL_FROM=
+EMAIL_USER=
+EMAIL_PASS=
+GOOGLE_CLIENT_ID=
+```
 
----
+Run backend:
+```bash
+npm run dev
+```
 
-## 🛠️ Tech Stack
+### 3. Frontend Setup
+```bash
+cd ../frontend
+npm install
+```
 
+Create frontend .env:
+```env
+REACT_APP_API_URL=http://localhost:5000
+REACT_APP_GOOGLE_CLIENT_ID=
+```
+
+Run frontend:
+```bash
+npm start
+```
+
+Frontend runs at http://localhost:3000
+
+## Production URLs
+- Frontend: https://communityresourceboard.netlify.app
+- Backend: https://community-resource-board-api.onrender.com
+- Health: https://community-resource-board-api.onrender.com/health
+
+## Deployment Guide
+### Netlify (Frontend)
+- Base directory: frontend
+- Build command: npm run build
+- Publish directory: build
+- Environment variable:
+  - REACT_APP_API_URL=https://community-resource-board-api.onrender.com
+
+### Render (Backend)
+- Root directory: backend
+- Build command: npm install
+- Start command: npm start
+- Required environment variables:
+  - MONGODB_URI
+  - JWT_SECRET
+  - NODE_ENV=production
+  - FRONTEND_URL=https://communityresourceboard.netlify.app
+  - NETLIFY_SITE_NAME=communityresourceboard
+
+## Core API Routes
+- POST /api/auth/register
+- POST /api/auth/login
+- GET /api/users/profile
+- PUT /api/users/profile
+- PUT /api/users/profile/photo
+- PUT /api/users/change-password
+- GET /api/resources
+- POST /api/resources
+- GET /api/applications/my
+- GET /api/applications/organizer
+- PATCH /api/applications/:id/status
+- GET /health
+
+## Role Matrix
+- User: browse/apply resources, manage own profile.
+- Organizer: all user actions + create resources + review applications.
+- Admin: all organizer actions + policy and user management.
+
+## Troubleshooting
+- CORS error in browser:
+  - Check FRONTEND_URL and NETLIFY_SITE_NAME in backend env.
+  - Confirm frontend domain is https://communityresourceboard.netlify.app.
+- 401 Unauthorized:
+  - Ensure token exists in localStorage and is not expired.
+- Avatar upload fails:
+  - Use JPG/PNG/WEBP and keep file size practical.
+  - Verify backend is running with JSON body limits enabled.
+- Empty dashboard stats:
+  - Confirm API URL is backend root (no /api suffix).
+
+## Scripts
 ### Backend
-- **Node.js & Express.js**: RESTful API server.
-- **MongoDB & Mongoose**: Schema-based NoSQL database.
-- **JWT (jsonwebtoken)**: Token-based authentication.
-- **bcryptjs**: Secure password hashing.
-- **CORS**: Cross-origin request handling.
+- npm run dev
+- npm start
 
 ### Frontend
-- **React.js**: Component-based UI with hooks.
-- **React Router**: Client-side routing.
-- **Axios**: HTTP client with interceptors for auth/errors.
-- **React Context**: Global state for auth/user.
-- **Bootstrap/CSS**: Responsive styling and components.
+- npm start
+- npm run build
+- npm test
 
-### Deployment & Tools
-- **Netlify**: Frontend static hosting with auto-deploys.
-- **Render**: Backend serverless hosting (free tier).
-- **MongoDB Atlas**: Cloud database (free M0 cluster).
-- **GitHub Actions**: CI/CD pipeline.
-- **dotenv**: Environment variable management.
+## Startup Roadmap
+- Add email notifications for application status updates.
+- Add analytics dashboard (resource conversion funnel).
+- Add audit logs for admin actions.
+- Add e2e tests and CI quality gates.
+- Add image optimization pipeline for profile photos.
 
----
+## Contributing
+1. Fork the repository.
+2. Create a branch.
+3. Make changes with clear commits.
+4. Open a pull request.
 
-## 📁 Project Structure
+## Contact
+- GitHub: https://github.com/vijayshikhare
+- LinkedIn: https://linkedin.com/in/vijayshikhare
 
-```
-community-resource-board/
-├── backend/                          # Node/Express backend
-│   ├── src/
-│   │   ├── controllers/              # Business logic (authController.js, userController.js)
-│   │   ├── models/                   # DB schemas (User.js, Application.js, Resource.js)
-│   │   ├── middlewares/              # Auth middleware (auth.js)
-│   │   ├── routes/                   # API routes (auth.js, users.js, resources.js, applications.js)
-│   │   └── server.js                 # Main server (CORS, DB connect, routes)
-│   ├── .env                          # Env vars (MONGODB_URI, JWT_SECRET)
-│   └── package.json                  # Backend deps
-├── frontend/                         # React frontend
-│   ├── public/                       # Static assets
-│   ├── src/
-│   │   ├── components/               # Reusable UI (Navbar.js, Footer.js, ProtectedRoute.js)
-│   │   ├── context/                  # State management (AuthContext.js)
-│   │   ├── pages/                    # Views (Home.js, Login.js, Register.js, Dashboard.js)
-│   │   ├── services/                 # API client (api.js)
-│   │   └── utils/                    # Helpers
-│   ├── .env                          # REACT_APP_API_URL
-│   └── package.json                  # Frontend deps
-├── .gitignore                        # Ignore node_modules, .env
-├── netlify.toml                      # Netlify build config (optional)
-└── README.md                         # This file
-```
-
----
-
-## 🚀 Quick Start (Local Development)
-
-### Prerequisites
-- Node.js (v18+)
-- Git
-- MongoDB Atlas account (free cluster)
-
-### Backend Setup
-1. Clone repo:
-   ```
-   git clone https://github.com/vijayshikhare/community-resource-board.git
-   cd backend
-   ```
-2. Install dependencies:
-   ```
-   npm install
-   ```
-3. Create `.env`:
-   ```
-   MONGODB_URI=mongodb+srv://admin:yourpassword@cluster0.xxxxx.mongodb.net/communitydb?retryWrites=true&w=majority
-   JWT_SECRET=your-super-secret-jwt-key-change-this
-   NODE_ENV=development
-   PORT=5000
-   CORS_ORIGINS=http://localhost:3000,http://localhost:5173
-   ORGANIZER_INVITE_CODE=your-organizer-invite-code
-   ADMIN_INVITE_CODE=your-admin-invite-code
-   EMAIL_USER=your_email@gmail.com
-   EMAIL_PASS=your_email_app_password
-   ```
-4. Start server:
-   ```
-   npm start
-   ```
-   - Expected: "🚀 Server running on port 5000" & "✅ MongoDB Connected Successfully".
-
-### Frontend Setup
-1. In project root:
-   ```
-   cd frontend
-   npm install
-   ```
-2. Create `.env`:
-   ```
-   REACT_APP_API_URL=http://localhost:5000
-   ```
-3. Start dev server:
-   ```
-   npm start
-   ```
-   - Opens `http://localhost:3000`.
-
-### Local Testing
-- Register: `/register` (use "ADMIN2024" invite for admin role).
-- Login: `/login` → Redirect to dashboard.
-- Create resource: Organizer dashboard.
-- Health check: `http://localhost:5000/health`.
-
----
-
-## 🌍 Deployment Guide
-
-### Frontend (Netlify – Free Static Hosting)
-1. Connect GitHub repo to [Netlify](https://netlify.com).
-2. Build settings:
-   - Base directory: `frontend`
-   - Build command: `npm run build`
-   - Publish directory: `build`
-   - Env var: `REACT_APP_API_URL=https://community-resource-board-api.onrender.com/`
-3. Deploy: Auto on Git push.
-
-### Backend (Render – Free Node Hosting)
-1. Connect GitHub repo to [Render](https://render.com) (root dir: `backend`).
-2. Build command: `npm install`
-3. Start command: `npm start`
-4. Env vars: MONGODB_URI, JWT_SECRET, NODE_ENV=production.
-5. Deploy: Auto on Git push.
-
-### Database (MongoDB Atlas – Free Tier)
-1. Create M0 cluster at [MongoDB Atlas](https://mongodb.com/atlas).
-2. Network Access: Add 0.0.0.0/0 (whitelist all IPs).
-3. Use connection string in MONGODB_URI.
-
-**Live Links**:
-- Frontend: [https://community-resource-board.netlify.app](https://community-resource-board.netlify.app)
-- Backend: [https://community-resource-board-api.onrender.com/health](https://community-resource-board-api.onrender.com/health)
-
----
-
-## 📖 API Endpoints
-
-| Method | Endpoint | Description | Auth | Role |
-|--------|----------|-------------|------|------|
-| POST | `/api/auth/register` | Register user (invite code for role) | No | Public |
-| POST | `/api/auth/login` | Login user | No | Public |
-| GET | `/api/users/profile` | Get profile | Yes | All |
-| PUT | `/api/users/profile` | Update profile | Yes | All |
-| PUT | `/api/users/change-password` | Change password | Yes | All |
-| DELETE | `/api/users/account` | Delete account | Yes | All |
-| GET | `/api/resources` | Get resources | No | Public |
-| POST | `/api/resources` | Create resource | Yes | Organizer/Admin |
-| GET | `/api/applications/my` | Get my applications | Yes | User |
-| POST | `/api/applications` | Submit application | Yes | User |
-| GET | `/api/applications/organizer` | Get organizer applications | Yes | Organizer/Admin |
-| PATCH | `/api/applications/:id/status` | Update application status | Yes | Organizer/Admin |
-
-**Health**: GET `/health` (no auth).
-
----
-
-## 📱 Usage Guide
-
-1. **Registration**: `/register` → Fill form, optional invite code for role.
-2. **Login**: `/login` → Credentials → Role-based dashboard.
-3. **User Dashboard**: Browse resources, apply.
-4. **Organizer Dashboard**: Create resources, review applications.
-5. **Admin Dashboard**: Manage users/resources.
-
----
-
-## 🤝 Contributing
-
-1. Fork the repo.
-2. Create branch: `git checkout -b feature/your-feature`.
-3. Commit: `git commit -m "Add feature"`.
-4. Push: `git push origin feature/your-feature`.
-5. Pull Request to `main`.
-
-**Guidelines**: ESLint, test changes, update README.
-
----
-
-## 📄 License
-
-MIT License – see [LICENSE](LICENSE).
-
----
-
-## 📞 Contact
-
-**Vijay Shikhare** – Full Stack Developer.
-
-- Email: vijayshikhareteam@gmail.com
-- LinkedIn: [linkedin.com/in/vijayshikhare](https://linkedin.com/in/vijayshikhare)
-- GitHub: [github.com/vijayshikhare](https://github.com/vijayshikhare)
-
-Issues? Open a GitHub issue.
-
----
-
-## 🔑 SEO Keywords
-
-`community resource board`, `MERN app`, `resource sharing platform`, `job application tracker`, `role-based dashboard`, `JWT auth MERN`, `MongoDB Express React Node`, `free deployment guide`, `Netlify Render tutorial`, `full stack community app`.
-
----
-
-## 🌐 Popular Tags
-
-`#MERNStack` `#FullStack` `#ReactJS` `#NodeJS` `#MongoDB` `#ExpressJS` `#JWTAuth` `#Netlify` `#Render` `#CommunityApp` `#ResourcePlatform` `#ApplicationSystem`
-
----
-
-✨ *Built with passion – star the repo if useful!* **Vijay Shikhare**
-
+Built for practical community impact with a deployment-first mindset.

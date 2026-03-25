@@ -9,7 +9,7 @@ const SearchResources = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [resources, setResources] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState({
@@ -21,7 +21,6 @@ const SearchResources = () => {
 
   const fetchResources = async () => {
     try {
-      setLoading(true);
       setError('');
 
       const params = {};
@@ -36,7 +35,7 @@ const SearchResources = () => {
     } catch (err) {
       setError(apiHelpers.getErrorMessage(err));
     } finally {
-      setLoading(false);
+      if (initialLoading) setInitialLoading(false);
     }
   };
 
@@ -162,7 +161,7 @@ const SearchResources = () => {
             </p>
           </div>
 
-          {loading && resources.length === 0 ? (
+          {initialLoading && resources.length === 0 ? (
             <div className="flex-center" style={{ padding: '2.5rem 0' }}>
               <div className="loading"></div>
             </div>

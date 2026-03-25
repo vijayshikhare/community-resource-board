@@ -10,6 +10,25 @@ dotenv.config();
 
 const app = express();
 const isProduction = process.env.NODE_ENV === 'production';
+const netlifySiteName = process.env.NETLIFY_SITE_NAME || 'communityresourceboard';
+const legacyNetlifySiteName = 'community-resource-board';
+
+const isAllowedNetlifyOrigin = (origin) => {
+  if (!origin) return false;
+
+  try {
+    const { hostname } = new URL(origin);
+    const siteNames = [netlifySiteName, legacyNetlifySiteName];
+
+    return siteNames.some((name) => {
+      const primaryHost = `${name}.netlify.app`;
+      const previewSuffix = `--${name}.netlify.app`;
+      return hostname === primaryHost || hostname.endsWith(previewSuffix);
+    });
+  } catch {
+    return false;
+  }
+};
 
 const parseAllowedOrigins = () => {
   const configuredOrigins = process.env.CORS_ORIGINS || process.env.CORS_ORIGIN || '';
@@ -18,24 +37,33 @@ const parseAllowedOrigins = () => {
     .map((origin) => origin.trim())
     .filter(Boolean);
 
+  const productionFallback = [
+    process.env.FRONTEND_URL,
+    `https://${netlifySiteName}.netlify.app`,
+    `https://${legacyNetlifySiteName}.netlify.app`,
+  ].filter(Boolean);
+
   if (configured.length > 0) {
-    return configured;
+    return [...new Set([...configured, ...productionFallback])];
   }
 
-  return isProduction
-    ? [process.env.FRONTEND_URL].filter(Boolean)
-    : [
-        'http://localhost:3000',
-        'http://localhost:5173',
-        'http://127.0.0.1:3000',
-      ];
+  if (isProduction) {
+    return productionFallback;
+  }
+
+  return [
+    ...productionFallback,
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'http://127.0.0.1:3000',
+  ];
 };
 
 const allowedOrigins = new Set(parseAllowedOrigins());
 
 const corsOptions = {
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.has(origin)) {
+    if (!origin || allowedOrigins.has(origin) || (isProduction && isAllowedNetlifyOrigin(origin))) {
       return callback(null, true);
     }
 
@@ -54,8 +82,8 @@ app.use(
   })
 );
 app.use(cors(corsOptions));
-app.use(express.json({ limit: '1mb' }));
-app.use(express.urlencoded({ extended: true, limit: '1mb' }));
+app.use(express.json({ limit: '8mb' }));
+app.use(express.urlencoded({ extended: true, limit: '8mb' }));
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,

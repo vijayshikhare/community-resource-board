@@ -2,7 +2,15 @@ import axios from 'axios';
 
 const normalizeBaseUrl = (value) => {
   if (!value) return '';
-  return value.endsWith('/') ? value.slice(0, -1) : value;
+
+  const trimmed = value.trim().replace(/\/+$/, '');
+
+  // Accept either API host root or host/api and normalize to host root.
+  if (trimmed.toLowerCase().endsWith('/api')) {
+    return trimmed.slice(0, -4);
+  }
+
+  return trimmed;
 };
 
 const API_BASE_URL = normalizeBaseUrl(
@@ -168,12 +176,23 @@ export const apiHelpers = {
 
   uploadProfilePhoto: async (file) => {
     try {
-      const formData = new FormData();
-      formData.append('profilePhoto', file);
-      const response = await api.put('/api/users/profile/photo', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+      // Convert file to base64
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = async () => {
+          try {
+            const base64String = reader.result; // data:image/...;base64,...
+            const response = await api.put('/api/users/profile/photo', {
+              profilePhoto: base64String,
+            });
+            resolve(response.data);
+          } catch (error) {
+            reject(error);
+          }
+        };
+        reader.onerror = () => reject(new Error('Failed to read file'));
+        reader.readAsDataURL(file);
       });
-      return response.data;
     } catch (error) {
       throw formatApiError(error);
     }

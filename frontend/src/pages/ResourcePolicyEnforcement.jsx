@@ -9,7 +9,7 @@ const ResourcePolicyEnforcement = () => {
   const navigate = useNavigate();
 
   const [resources, setResources] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [error, setError] = useState('');
   const [busyId, setBusyId] = useState('');
   const [filter, setFilter] = useState('all');
@@ -22,7 +22,7 @@ const ResourcePolicyEnforcement = () => {
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to load resources for policy enforcement.');
     } finally {
-      setLoading(false);
+      if (initialLoading) setInitialLoading(false);
     }
   };
 
@@ -121,7 +121,7 @@ const ResourcePolicyEnforcement = () => {
           </div>
         </section>
 
-        {loading ? (
+        {initialLoading ? (
           <section className="section flex-center" style={{ minHeight: '40vh' }}>
             <div className="loading"></div>
           </section>

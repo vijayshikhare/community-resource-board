@@ -2,9 +2,10 @@ import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-const ProtectedRoute = ({ children, requiredRole = null, requiredRoles = [] }) => {
+const ProtectedRoute = ({ children, requiredRole = null, requiredRoles = [], allowedRoles = [] }) => {
   const { user, loading, isAuthenticated } = useAuth();
   const location = useLocation();
+  const rolesList = requiredRoles.length > 0 ? requiredRoles : allowedRoles;
 
   // Loading spinner
   if (loading) {
@@ -50,10 +51,10 @@ const ProtectedRoute = ({ children, requiredRole = null, requiredRoles = [] }) =
   // Role-based access
   const roleDenied =
     (requiredRole && user.role !== requiredRole && user.role !== 'admin') ||
-    (requiredRoles.length > 0 && !requiredRoles.includes(user.role) && user.role !== 'admin');
+    (rolesList.length > 0 && !rolesList.includes(user.role) && user.role !== 'admin');
 
   if (roleDenied) {
-    const rolesText = requiredRole ? requiredRole : requiredRoles.join(', ');
+    const rolesText = requiredRole ? requiredRole : rolesList.join(', ');
     return (
       <div style={{
         display: 'flex', justifyContent: 'center', alignItems: 'center',

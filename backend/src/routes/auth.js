@@ -76,13 +76,14 @@ router.post(
         }
       }
 
-      // Assign role based on invite code
+      // Assign role based on invite code (only organizer, NOT admin for security)
       let role = 'user';
       if (inviteCode) {
         const normalizedInviteCode = inviteCode.trim();
-        if (ORGANIZER_INVITE_CODE && normalizedInviteCode === ORGANIZER_INVITE_CODE) role = 'organizer';
-        else if (ADMIN_INVITE_CODE && normalizedInviteCode === ADMIN_INVITE_CODE) role = 'admin';
-        else {
+        if (ORGANIZER_INVITE_CODE && normalizedInviteCode === ORGANIZER_INVITE_CODE) {
+          role = 'organizer';
+        } else {
+          // Admin codes are NOT accepted in public registration for security
           return res.status(400).json({ success: false, message: 'Invalid invite code' });
         }
       }

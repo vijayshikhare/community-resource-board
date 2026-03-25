@@ -37,7 +37,13 @@ const Register = () => {
       }
 
       const role = result.user?.role;
-      navigate(['organizer', 'admin'].includes(role) ? '/organizer' : '/dashboard', { replace: true });
+      if (role === 'admin') {
+        navigate('/admin', { replace: true });
+      } else if (role === 'organizer') {
+        navigate('/organizer', { replace: true });
+      } else {
+        navigate('/dashboard', { replace: true });
+      }
     } catch {
       setLocalError('Registration failed. Please retry.');
     } finally {
@@ -103,7 +109,8 @@ const Register = () => {
 
               <div className="form-group">
                 <label htmlFor="inviteCode">Invite code (optional)</label>
-                <input id="inviteCode" value={inviteCode} onChange={(e) => setInviteCode(e.target.value)} placeholder="Use organizer/admin invite code" />
+                <input id="inviteCode" value={inviteCode} onChange={(e) => setInviteCode(e.target.value)} placeholder="Organizer invite code only" />
+                <p style={{ marginTop: '0.3rem', fontSize: '0.82rem', color: 'var(--text-500)' }}>Only organizer invite codes are accepted. Admin accounts are created separately.</p>
               </div>
 
               <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '1rem' }}>

@@ -67,10 +67,25 @@ const ApplicationsReview = () => {
     }
   };
 
+  // Initial load on mount
+  useEffect(() => {
+    if (!user || !['organizer', 'admin'].includes(user.role)) return;
+    setInitialLoading(true);
+    fetchApplications();
+  }, [user]);
+
+  // Fetch on filter change
+  useEffect(() => {
+    if (!user || !['organizer', 'admin'].includes(user.role)) return;
+    setInitialLoading(true);
+    fetchApplications();
+  }, [filter, user]);
+
+  // Realtime refresh
   useRealtimeRefresh(fetchApplications, {
     intervalMs: 10000,
     enabled: Boolean(user && ['organizer', 'admin'].includes(user.role)),
-    runOnMount: true,
+    runOnMount: false,
   });
 
   const stats = useMemo(() => ({
