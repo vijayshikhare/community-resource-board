@@ -1,0 +1,8 @@
+# Default code owners
+* @vijayshikhare
+
+# Backend ownership
+/backend/ @vijayshikhare
+
+# Frontend ownership
+/frontend/ @vijayshikhare
